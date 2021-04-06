@@ -1,0 +1,29 @@
+// Relacionamentos
+[Cliente]cliente 1++>contas 0..*[Conta]
+[Conta]conta 1++-transacoes 0..*>[Transacao]
+[Transferencia]++conta_destino 1>[Conta]
+
+[Conta]++-pacote 1>[PacoteServico]
+
+
+// Classes
+[<<Singleton>>;Gerenciador||]
+[Gerenciador]<>-contas 0..*>[Conta]
+[Gerenciador]<>-transacoes 0..*>[Transacao]
+[Gerenciador]<>-operadores 0..*>[Operador]
+
+
+[Conta|-id:Long;-saldo:float;-datahora:Calendar|]
+
+[Pessoa|-id:Long;-nome:String;-cpf:String;-senha:String|]
+[Pessoa]^[Cliente]
+[Pessoa]^[Operador]
+
+[<<Abstract>>Transacao|-id:Long;-valor:float;-datahora:Calendar;-descricao:String;-autorizada:boolean|]
+[Transacao]^[Retirada||]
+[Transacao]^[Deposito||]
+[Transacao]^[Transferencia||]
+[Transacao]^[CustoOperacional||]
+[Transacao]^[Rendimento||]
+[Transacao]operador 0..1++->[Operador]
+[PacoteServico|-id:Long;-nome:String;-valor_mensalidade:float;-dia_vencimento:int;-qtde_retiradas:int;valor_retiradas:float;-taxa_rendimento:float|]

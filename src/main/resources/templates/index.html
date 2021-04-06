@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: imports-css(title='Operadores')}">
+<title>title</title>
+</head>
+<body>
+        <h1 th:utext="${title}" />
+        <a th:href="@{/contacts}">Contact List</a>  
+        <br/><br/>
+        <div>Copyright © vilmarjr.com</div>
+    </body>
+</html>
