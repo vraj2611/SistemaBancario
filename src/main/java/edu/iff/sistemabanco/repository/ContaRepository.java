@@ -12,11 +12,9 @@ import edu.iff.sistemabanco.model.Conta;
 @Repository
 public interface ContaRepository extends JpaRepository < Conta, Long>{
 
-	//@Query("SELECT cn FROM Conta cn JOIN Cliente clt ON clt.id = :cliente_id")
 	@Query(value ="SELECT * FROM conta WHERE cliente_id = :id", nativeQuery = true)
 	public List<Conta> findByClienteId(@Param("id")Long cliente_id);
 
-	//@Query("SELECT cn FROM Conta cn JOIN PacoteServico pct ON pct.id = :pacote_id")
 	@Query(value ="SELECT * FROM conta WHERE pacote_id = :id", nativeQuery = true)
 	public List<Conta> findByPacoteId(@Param("id")Long pacote_id);
 	

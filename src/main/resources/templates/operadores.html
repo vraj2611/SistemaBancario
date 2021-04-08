@@ -10,7 +10,7 @@
 	<div class="container" style="margin-top: 20px">
 		<div class="card-header">
 			<h4>
-				Operadores<a class="btn btn-primary float-right"
+				<span th:text="${#lists.size(operadores)}+' Operadores'"></span> <a class="btn btn-primary float-right"
 					th:href="@{~/operadores/operador}" role="button">Novo Operador</a>
 			</h4>
 		</div>

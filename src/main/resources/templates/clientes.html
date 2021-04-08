@@ -10,8 +10,9 @@
 	<div class="container" style="margin-top: 20px">
 		<div class="card-header">
 			<h4>
-				Clientes<a class="btn btn-primary float-right"
-					th:href="@{~/clientes/cliente}" role="button">Novo Cliente</a>
+				<span th:text="${#lists.size(clientes)}+' Clientes'"></span> <a
+					class="btn btn-primary float-right" th:href="@{~/clientes/cliente}"
+					role="button">Novo Cliente</a>
 			</h4>
 		</div>
 		<div class="shadow">
@@ -26,10 +27,8 @@
 				<tbody>
 					<tr th:each="cliente : ${clientes}">
 						<th scope="row" th:text="${cliente.id}"></th>
-						<td>
-						<a th:href="@{'~/clientes/cliente/'+${cliente.id}}"
-							th:text="${cliente.nome}"></a>
-						</td>
+						<td><a th:href="@{'~/clientes/cliente/'+${cliente.id}}"
+							th:text="${cliente.nome}"></a></td>
 						<td th:text="${cliente.cpf}"></td>
 					</tr>
 				</tbody>

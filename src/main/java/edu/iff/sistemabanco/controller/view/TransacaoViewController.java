@@ -21,5 +21,11 @@ public class TransacaoViewController {
 		return "transacoes";
 	}
 
+	@GetMapping(path = "/pendentes")
+	public String getPendentes(Model model) {
+		model.addAttribute("transacoes", serv.findPendentes());
+		return "transacoes";
+	}
+
 	
 }

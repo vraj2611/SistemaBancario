@@ -1,5 +1,7 @@
 package edu.iff.sistemabanco.controller.view;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import edu.iff.sistemabanco.model.Cliente;
+import edu.iff.sistemabanco.model.Conta;
 import edu.iff.sistemabanco.service.ClienteService;
 import edu.iff.sistemabanco.service.ContaService;
 
@@ -43,7 +46,11 @@ public class ClienteViewController {
 	@GetMapping(path = "/cliente/{id}")
 	public String alterar(@PathVariable("id") Long id, Model model) {
 		model.addAttribute("cliente", serv.findById(id));
-		model.addAttribute("contas", contaServ.findByClienteId(id));
+		List<Conta> contas = contaServ.findByClienteId(id);
+		double saldo_cliente = 0;
+		for(Conta c :contas) saldo_cliente += c.getSaldo(); 
+		model.addAttribute("saldo_cliente", saldo_cliente);
+		model.addAttribute("contas", contas);
 		return "formCliente";
 	}
 	

@@ -7,7 +7,7 @@
 <body>
 	<div th:replace="~{fragmentos :: barramenu(pagina='clientes')}" />
 
-	<div class="container" style="width: 60%; margin-top: 20px">
+	<div class="container" style="margin-top: 20px">
 		<div class="card-header">
 			<h4>
 				Cliente <span th:text="${cliente.nome}"></span> <a
@@ -37,25 +37,27 @@
 			<div class="form-row" th:unless="${cliente.id}">
 				<div class="form-group col-md-6">
 					<label for="senha">Senha:</label> <input th:field="*{senha}"
-						type="password" class="form-control" placeholder="Senha" minlength="8"
-						required="required"/>
+						type="password" class="form-control" placeholder="Senha"
+						minlength="8" required="required" />
 				</div>
 				<div class="form-group col-md-6">
-					<label for="senha">Confirmar Senha:</label> <input name="confirmarsenha"
-						type="password" class="form-control" placeholder="Senha" minlength="8"
-						required="required" />
+					<label for="senha">Confirmar Senha:</label> <input
+						name="confirmarsenha" type="password" class="form-control"
+						placeholder="Senha" minlength="8" required="required" />
 				</div>
 			</div>
 			<div class="card-footer">
 				<input type="submit" class="btn btn-primary" value="Salvar" /> <a
-					id="btn_altsenha" class="btn btn-outline-primary btn-sm" th:if="${cliente.id}">Alterar
-					Senha</a> <a th:href="@{'~/clientes/'+${cliente.id}+'/deletar'}"
+					id="btn_altsenha" class="btn btn-outline-primary btn-sm"
+					th:if="${cliente.id}">Alterar Senha</a> <a
+					th:href="@{'~/clientes/'+${cliente.id}+'/deletar'}"
 					class="btn btn-outline-danger btn-sm float-right"
 					th:if="${cliente.id}"
 					onclick="return confirm('Deseja realmente excluir esse pacote?')">Excluir</a>
 			</div>
 		</form>
-		<form th:object="${cliente}" id="frm_altsenha" style="display:none" th:if="${cliente.id}"
+		<form th:object="${cliente}" id="frm_altsenha" style="display: none"
+			th:if="${cliente.id}"
 			th:action="@{'~/clientes/cliente/'+${cliente.id}+'/alterarsenha'}"
 			method="post" class="card-body">
 			<input type="hidden" th:field="*{id}" />
@@ -74,30 +76,67 @@
 			</div>
 			<div class="form-row">
 				<div class="form-group">
-					<label for="senha">Senha Atual:</label> <input
-						th:field="*{senha}" type="password" class="form-control"
-						placeholder="Senha Atual" required="required" minlength="8" />
+					<label for="senha">Senha Atual:</label> <input th:field="*{senha}"
+						type="password" class="form-control" placeholder="Senha Atual"
+						required="required" minlength="8" />
 				</div>
 			</div>
 			<div class="form-row">
 				<div class="form-group">
 					<label for="nova_senha">Nova Senha:</label> <input
 						th:name="nova_senha" type="password" class="form-control"
-						placeholder="Nova Senha" required="required" minlength="8"/>
+						placeholder="Nova Senha" required="required" minlength="8" />
 				</div>
 			</div>
 			<div class="form-row">
 				<div class="form-group">
 					<label for="confirma_senha">Confirmar Senha:</label> <input
 						th:name="confirma_senha" type="password" class="form-control"
-						placeholder="Confirmar Senha" required="required" minlength="8"/>
+						placeholder="Confirmar Senha" required="required" minlength="8" />
 				</div>
 			</div>
 			<div class="card-footer">
-				<input type="submit" class="btn btn-primary" value="Salvar" />
-				<a	id="btn_cancelar" class="btn btn-outline-primary btn-sm">Cancelar</a>
+				<input type="submit" class="btn btn-primary" value="Salvar" /> <a
+					id="btn_cancelar" class="btn btn-outline-primary btn-sm">Cancelar</a>
 			</div>
 		</form>
+	</div>
+
+
+
+
+	<div class="container" style="margin-top: 20px" th:if="${cliente.id}">
+		<div class="card-header shadow"
+			style="background: rgb(220, 220, 220); font-size: 1.2rem; font-weight: bolder; margin-top: 20px">
+			<h6>
+				<span th:text="${#lists.size(contas)+' Contas do Cliente - Saldo Total: '+#numbers.formatCurrency(saldo_cliente)}"></span>
+				<a class="btn btn-primary btn-sm float-right"
+					th:href="@{~/contas/conta}" role="button">Nova Conta</a>
+			</h6>
+		</div>
+
+		<table class="table shadow">
+			<thead>
+				<tr>
+					<th scope="col">ID</th>
+					<th scope="col">Nome</th>
+					<th scope="col">Pacote</th>
+					<th scope="col">Saldo</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr th:each="conta : ${contas}">
+					<th scope="row" th:text="${conta.id}"></th>
+					<td><a th:href="@{'~/contas/conta/'+${conta.id}}"
+						th:text="${conta.nome}"></a></td>
+					<td><a th:href="@{'~/pacotes/pacote/'+${conta.pacote.id}}"
+						th:text="${conta.pacote.nome}"></a></td>
+					<td th:text="${#numbers.formatCurrency(conta.saldo)}"></td>
+				</tr>
+
+			</tbody>
+		</table>
 	</div>
 
 	<div th:replace="~{fragmentos :: imports-js}" />

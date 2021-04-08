@@ -19,7 +19,6 @@ import edu.iff.sistemabanco.service.PacoteServicoService;
 @Controller
 @RequestMapping(path = "/pacotes")
 public class PacoteServicoViewController {
-
 	
 	@Autowired
 	PacoteServicoService serv;
@@ -67,8 +66,9 @@ public class PacoteServicoViewController {
 			model.addAttribute("msgErros", result.getAllErrors());
 			return "formPacoteServico";
 		}
-		pacote.setId(id);
+		
 		try {
+			pacote.setId(id);
 			serv.update(pacote);
 			model.addAttribute("msgSucesso", "PacoteServico atualizado com sucesso.");
 			model.addAttribute("pacote", pacote);
