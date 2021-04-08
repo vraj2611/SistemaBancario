@@ -21,63 +21,80 @@ import edu.iff.sistemabanco.repository.TransacaoRepository;
 public class OperadorService {
 	@Autowired
 	private OperadorRepository repo;
-	
+
 	@Autowired
 	private TransacaoRepository transacaoRepo;
-	
 
-	public List<Operador> findAll(int page, int size){
+	public List<Operador> findAll(int page, int size) {
 		Pageable p = PageRequest.of(page, size);
 		return repo.findAll(p).toList();
 	}
-	
-	public List<Operador> findAll(){
+
+	public List<Operador> findAll() {
 		return repo.findAll();
 	}
-	
-	public Operador findById(Long id){
-		 Optional<Operador> result = repo.findById(id);
-		 if(result.isEmpty()) throw new NotFoundException("Operador nao encontrado!");
-		 return result.get();
+
+	public Operador findById(Long id) {
+		Optional<Operador> result = repo.findById(id);
+		if (result.isEmpty())
+			throw new NotFoundException("Operador nao encontrado!");
+		return result.get();
 	}
-	
+
 	public Operador save(Operador o) {
 		try {
 			o.setSenha(new BCryptPasswordEncoder().encode(o.getSenha()));
-			return repo.save(o);	
-		} catch(Exception e) {
+			return repo.save(o);
+		} catch (Exception e) {
 			ValidationError.isConstraintViolation(e);
 			throw new RuntimeException("Erro ao salvar Operador!");
 		}
-		
+
 	}
-	
+
 	public Operador update(Operador o) {
 		try {
-			return repo.save(o);
-		} catch(Exception e) {
+			Operador o2 = findById(o.getId());
+			o2.setNome(o.getNome());
+			return repo.save(o2);
+		} catch (Exception e) {
 			ValidationError.isConstraintViolation(e);
 			throw new RuntimeException("Erro ao atualizar Operador!");
 		}
 	}
-	
+
 	public void delete(Long id) {
 		Operador o = findById(id);
 		checkDeleteOperador(o);
 		try {
-			repo.delete(o);			
-		} catch(Exception e) {
+			repo.delete(o);
+		} catch (Exception e) {
 			throw new RuntimeException("Erro ao excluir Operador!");
 		}
-		
+
 	}
-	
-	
+
 	private void checkDeleteOperador(Operador o) {
 		List<Transacao> transacoes = transacaoRepo.findByOperadorId(o.getId());
-		if(transacoes.size() > 0)
-			throw new NotDeletableException("Nao pode excluir Operadores que ja fizeram transacoes!");
+		if (transacoes.size() > 0)
+			throw new NotDeletableException(
+					"Nao pode excluir operadores que ja fizeram transacoes! qtde=" + transacoes.size());
 	}
 
-
+	public void alterarSenha(Operador o, String nova_senha) {
+		Operador odb = findById(o.getId());
+		checkSenhaAtual(odb, o.getSenha());
+		try {
+			odb.setSenha(new BCryptPasswordEncoder().encode(nova_senha));
+			repo.save(odb);
+		} catch (Exception e) {
+			throw new RuntimeException("Erro ao alterar senha!");
+		}
+	}
+	
+	private void checkSenhaAtual(Operador o, String senha_atual) {
+        BCryptPasswordEncoder crypt = new BCryptPasswordEncoder();
+		if (!crypt.matches(senha_atual, o.getSenha()))
+			throw new RuntimeException("Senha atual está incorreta!");
+	}
 }

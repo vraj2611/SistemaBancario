@@ -4,15 +4,14 @@
 <head th:replace="~{fragmentos :: imports-css(title='Contas')}">
 <title>title</title>
 </head>
-<body>
-	<div th:replace="~{fragmentos :: barramenu(pagina='contas')}"/>
+<body class="bg-gradiente">
+	<div th:replace="~{fragmentos :: barramenu(pagina='contas')}" />
 
 	<div class="container" style="margin-top: 20px">
 		<div class="card-header">
 			<h4>
-				Operadores cadastrados <a class="btn btn-primary float-right"
-					th:href="@{~/contas/conta}" role="button">Nova
-					Conta</a>
+				Contas <a class="btn btn-primary float-right"
+					th:href="@{~/contas/conta}" role="button">Nova Conta</a>
 			</h4>
 		</div>
 		<div class="shadow">
@@ -27,16 +26,18 @@
 						<th scope="col">Ações</th>
 					</tr>
 				</thead>
+				
 				<tbody>
 					<tr th:each="conta : ${contas}">
 						<th scope="row" th:text="${conta.id}"></th>
-						<td th:text="${conta.nome}"></td>
-						<td th:text="${conta.pacote.nome}"></td>
-						<td th:text="${conta.cliente.nome}"></td>
-						<td th:text="${conta.saldo}"></td>
 						<td><a th:href="@{'~/contas/conta/'+${conta.id}}"
-							class="btn btn-outline-primary btn-sm">Editar</a>
-							&nbsp;&nbsp;&nbsp; <a
+							th:text="${conta.nome}"></a></td>
+						<td><a th:href="@{'~/pacotes/pacote/'+${conta.pacote.id}}"
+							th:text="${conta.pacote.nome}"></a></td>
+						<td><a th:href="@{'~/clientes/cliente/'+${conta.cliente.id}}"
+							th:text="${conta.cliente.nome}"></a></td>
+						<td th:text="${#numbers.formatCurrency(conta.saldo)}"></td>
+						<td><a
 							th:href="@{'~/contas/'+${conta.id}+'/deletar'}"
 							class="btn btn-outline-danger btn-sm"
 							onclick="return confirm('Deseja realmente excluir esse contas?')">Excluir</a>

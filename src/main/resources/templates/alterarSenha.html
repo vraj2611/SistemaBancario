@@ -1,43 +1,56 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragmentos :: imports-css(title='Cliente')}">
+<head th:replace="~{fragmentos :: imports-css(title='Alterar Senha')}">
 <title>title</title>
 </head>
 <body>
-	<div th:replace="~{fragmentos :: barramenu(pagina='operadores')}" />
+	<div th:replace="~{fragmentos :: barramenu(pagina='_')}" />
 
 	<div class="container" style="width: 60%; margin-top: 20px">
 		<div class="card-header">
 			<h4>
-				Cadastro de operadores <a class="btn btn-primary float-right"
+				Alterar Senha <a class="btn btn-primary float-right"
 					th:href="@{~/operadores}" role="button">voltar</a>
 			</h4>
 		</div>
 
 		<div th:replace="~{fragmentos :: mensagens}"></div>
 
-		<form th:object="${operador}"
-			th:action="@{~/operadores/operador/{id}(id=${operador.id})}"
-			method="post" class="card-body">
+		<form th:object="${pessoa}"
+			th:action="@{~/alterarsenha/{id}(id=${operador.id})}" method="post"
+			class="card-body">
 			<input type="hidden" th:field="*{id}" />
 			<div class="form-row">
 				<div class="form-group col-md-8">
 					<label for="nome">Nome:</label> <input th:field="*{nome}"
 						type="text" class="form-control" placeholder="Nome"
-						required="required" maxlength="200" />
+						required="required" maxlength="200" disabled />
 				</div>
 				<div class="form-group col-md-4">
 					<label for="cpf">CPF:</label> <input th:field="*{cpf}"
 						pattern="[0-9]{11}" maxlength="11" type="text"
-						class="form-control" placeholder="CPF" required="required" />
+						class="form-control" placeholder="CPF" required="required"
+						disabled />
 				</div>
 			</div>
 			<div class="form-row">
 				<div class="form-group col-md-8">
-					<label for="nome">Senha:</label> <input th:field="*{senha}"
-						type="text" class="form-control" placeholder="Senha"
-						required="required" maxlength="8" />
+					<label for="nome">Senha Atual:</label> <input
+						th:field="*{senha_atual}" type="password" class="form-control"
+						placeholder="Senha Atual" required="required" />
+				</div>
+
+				<div class="form-group col-md-8">
+					<label for="nome">Nova Senha:</label> <input
+						th:field="*{nova_senha}" type="password" class="form-control"
+						placeholder="Nova Senha" required="required" />
+				</div>
+
+				<div class="form-group col-md-8">
+					<label for="nome">Confirmar Senha:</label> <input
+						th:field="*{confirmar_senha}" type="password" class="form-control"
+						placeholder="Confirmar Senha" required="required" />
 				</div>
 				<div class="form-group col-md-4"></div>
 			</div>

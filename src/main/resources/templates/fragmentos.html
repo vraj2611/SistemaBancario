@@ -13,10 +13,35 @@
 </head>
 <body>
 	<div th:fragment="barramenu(pagina)">
+		<style>
+body {
+	background: rgb(230, 255, 253);
+	background: linear-gradient(243deg, rgba(230, 255, 253, 1) 0%,
+		rgba(0, 212, 255, 1) 100%);
+}
+
+table {
+	background: rgb(255, 255, 255);
+}
+
+thead {
+	background: rgb(220, 220, 220);
+}
+.card-header {
+	background: rgba(255,255,255,0.9);
+}
+
+td a:link, td a:visited {
+	color:black;
+}
+.card-body {
+	background: rgb(255, 255, 255);
+}
+</style>
+
 		<div class="container">
-			<nav class="navbar navbar-expand-lg navbar-light bg-light">
-				<a class="navbar-brand" href="/">Sistema Bancario
-				</a>
+			<nav class="navbar navbar-expand-lg navbar-light bg-light shadow">
+				<a class="navbar-brand" href="/">Sistema Bancario </a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse"
 					data-target="#textoNavbar" aria-controls="textoNavbar"
 					aria-expanded="false" aria-label="Alterna navegação">

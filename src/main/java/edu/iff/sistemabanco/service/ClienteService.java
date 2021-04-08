@@ -43,6 +43,7 @@ public class ClienteService {
 	
 	public Cliente save(Cliente c) {
 		try {
+			c.setId(null);
 			c.setSenha(new BCryptPasswordEncoder().encode(c.getSenha()));
 			return repo.save(c);	
 		} catch(Exception e) {
@@ -54,7 +55,9 @@ public class ClienteService {
 	
 	public Cliente update(Cliente c) {
 		try {
-			return repo.save(c);
+			Cliente c2 = findById(c.getId());
+			c2.setNome(c.getNome());
+			return repo.save(c2);
 		} catch(Exception e) {
 			ValidationError.isConstraintViolation(e);
 			throw new RuntimeException("Erro ao atualizar Cliente!");
@@ -77,7 +80,13 @@ public class ClienteService {
 			throw new NotDeletableException("Nao pode excluir clientes que ja possui contas!");
 	}
 
-	
-
+	public void alterarSenha(Cliente c, String nova_senha) {
+		try {
+			c.setSenha(new BCryptPasswordEncoder().encode(nova_senha));	
+			repo.save(c);
+		} catch(Exception e) {
+			throw new RuntimeException("Erro ao alterar senha!");
+		}
+	}
 
 }
