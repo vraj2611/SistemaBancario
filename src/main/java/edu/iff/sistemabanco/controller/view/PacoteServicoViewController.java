@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import edu.iff.sistemabanco.model.PacoteServico;
+import edu.iff.sistemabanco.service.ContaService;
 import edu.iff.sistemabanco.service.PacoteServicoService;
 
 @Controller
@@ -22,6 +23,9 @@ public class PacoteServicoViewController {
 	
 	@Autowired
 	PacoteServicoService serv;
+	
+	@Autowired
+	ContaService cServ;
 	
 	@GetMapping
 	public String getAll(Model model) {
@@ -56,6 +60,7 @@ public class PacoteServicoViewController {
 	@GetMapping(path = "/pacote/{id}")
 	public String alterar(@PathVariable("id") Long id, Model model) {
 		model.addAttribute("pacote", serv.findById(id));
+		model.addAttribute("contas", cServ.findByPacoteId(id));
 		return "formPacoteServico";
 	}
 
@@ -72,6 +77,7 @@ public class PacoteServicoViewController {
 			serv.update(pacote);
 			model.addAttribute("msgSucesso", "PacoteServico atualizado com sucesso.");
 			model.addAttribute("pacote", pacote);
+			model.addAttribute("contas", cServ.findByPacoteId(id));
 			return "formPacoteServico";
 		} catch (Exception e) {
 			model.addAttribute("msgErros", new ObjectError("PacoteServico", e.getMessage()));
@@ -84,4 +90,5 @@ public class PacoteServicoViewController {
 		serv.delete(id);
 		return "redirect:/pacotes";
 	}
+	
 }

@@ -1,51 +1,115 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragmentos :: imports-css(title='Pacote Serviço')}">
+<head
+	th:replace="~{fragmentos :: imports-css(title='Pacotes de Serviço')}">
 <title>title</title>
 </head>
 <body>
 	<div th:replace="~{fragmentos :: barramenu(pagina='pacotes')}" />
 
-	<div class="container" style="width: 60%; margin-top: 20px">
+	<div class="container" style="margin-top: 20px">
 		<div class="card-header">
 			<h4>
-				Cadastro de operadores <a class="btn btn-primary float-right"
-					th:href="@{~/operadores}" role="button">voltar</a>
+				Pacote <span th:text="${pacote.nome}"></span> <a
+					class="btn btn-primary float-right" th:href="@{~/pacotes}"
+					role="button">Voltar</a>
 			</h4>
 		</div>
 
 		<div th:replace="~{fragmentos :: mensagens}"></div>
 
-		<form th:object="${operador}"
-			th:action="@{~/operadores/operador/{id}(id=${operador.id})}"
+		<form th:object="${pacote}"
+			th:action="@{${pacote.id}?'~/pacotes/pacote/'+${pacote.id}:'~/pacotes/pacote'}"
 			method="post" class="card-body">
 			<input type="hidden" th:field="*{id}" />
 			<div class="form-row">
-				<div class="form-group col-md-8">
+				<div class="form-group col-md-4">
 					<label for="nome">Nome:</label> <input th:field="*{nome}"
 						type="text" class="form-control" placeholder="Nome"
-						required="required" maxlength="200" />
+						required="required" maxlength="50" />
 				</div>
 				<div class="form-group col-md-4">
-					<label for="cpf">CPF:</label> <input th:field="*{cpf}"
-						pattern="[0-9]{11}" maxlength="11" type="text"
-						class="form-control" placeholder="CPF" required="required" />
+					<label for="valor_mensalidade">Mensalidade</label> <input
+						th:field="*{valor_mensalidade}" min="0" type="number" step="0.01"
+						class="form-control" placeholder="Mensalidade" required="required" />
+				</div>
+								<div class="form-group col-md-4">
+					<label for="taxa_rendimento">Rendimento</label> <input
+						th:field="*{taxa_rendimento}" min="0"  type="number" step="0.001"
+						class="form-control" placeholder="Rendimento" required="required" />
 				</div>
 			</div>
 			<div class="form-row">
-				<div class="form-group col-md-8">
-					<label for="nome">Senha:</label> <input th:field="*{senha}"
-						type="text" class="form-control" placeholder="Senha"
-						required="required" maxlength="8" />
+				<div class="form-group col-md-3">
+					<label for="limite_preaprovado">Limite Pré-Aprovado</label> <input
+						th:field="*{limite_preaprovado}" min="0" max="99999" type="number" step="0.01"
+						class="form-control" placeholder="Limite Pré-Aprovado" required="required" />
 				</div>
-				<div class="form-group col-md-4"></div>
+				<div class="form-group col-md-3">
+					<label for="valor_retiradas">Valor Retiradas</label> <input
+						th:field="*{valor_retiradas}"  min="0"  type="number" step="0.01"
+						class="form-control" placeholder="Valor Retiradas" required="required" />
+				</div>
+								<div class="form-group col-md-3">
+					<label for="qtde_retiradas">Quantidade Retiradas</label> <input
+						th:field="*{qtde_retiradas}" min="0" type="number"
+						class="form-control" placeholder="Quantidade Retiradas" required="required" />
+				</div>
+												<div class="form-group col-md-3">
+					<label for="dia vencimento">Dia Vencimento</label> <input
+						th:field="*{dia_vencimento}" min="1" type="number"
+						class="form-control" placeholder="Dia vencimento" required="required" />
+				</div>
 			</div>
 			<div class="card-footer">
-				<input type="submit" class="btn btn-success" value="salvar" />
+				<input type="submit" class="btn btn-primary" value="Salvar" />
 			</div>
 		</form>
 	</div>
+
+
+
+
+
+
+
+	<div class="container" style="margin-top: 20px" th:if="${pacote.id}">
+		<div class="card-header shadow"
+			style="font-size: 1.2rem; font-weight: bolder; margin-top: 20px">
+			<h6>
+				<span th:text="${#lists.size(contas)+' Contas utilizando esse Pacote'}"></span>
+				<a class="btn btn-primary btn-sm float-right disabled"
+					th:href="@{~/contas/conta}" role="button">Debitar Custos</a>
+								<span class="float-right">&nbsp;&nbsp;</span><a class="btn btn-primary btn-sm float-right disabled"
+					th:href="@{~/contas/conta}" role="button">Pagar Rendimentos</a>
+			</h6>
+		</div>
+
+		<table class="table shadow">
+			<thead>
+				<tr>
+					<th scope="col">ID</th>
+					<th scope="col">Nome</th>
+					<th scope="col">Cliente</th>
+					<th scope="col">Saldo</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr th:each="conta : ${contas}">
+					<th scope="row" th:text="${conta.id}"></th>
+					<td><a th:href="@{'~/contas/conta/'+${conta.id}}"
+						th:text="${conta.nome}"></a></td>
+					<td><a th:href="@{'~/clientes/cliente/'+${conta.cliente.id}}"
+						th:text="${conta.cliente.nome}"></a></td>
+					<td th:text="${#numbers.formatCurrency(conta.saldo)}"></td>
+				</tr>
+
+			</tbody>
+		</table>
+	</div>
+
 
 	<div th:replace="~{fragmentos :: imports-js}" />
 

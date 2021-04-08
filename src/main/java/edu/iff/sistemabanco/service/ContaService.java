@@ -51,6 +51,10 @@ public class ContaService {
 		return repo.findByClienteId(id);
 	}
 	
+	public List<Conta> findByPacoteId(Long id){
+		return repo.findByPacoteId(id);
+	}
+	
 	public Conta save(Conta conta) {
 		try {
 			return repo.save(conta);

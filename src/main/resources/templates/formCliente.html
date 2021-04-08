@@ -107,7 +107,7 @@
 
 	<div class="container" style="margin-top: 20px" th:if="${cliente.id}">
 		<div class="card-header shadow"
-			style="background: rgb(220, 220, 220); font-size: 1.2rem; font-weight: bolder; margin-top: 20px">
+			style="font-size: 1.2rem; font-weight: bolder; margin-top: 20px">
 			<h6>
 				<span th:text="${#lists.size(contas)+' Contas do Cliente - Saldo Total: '+#numbers.formatCurrency(saldo_cliente)}"></span>
 				<a class="btn btn-primary btn-sm float-right"
