@@ -1,13 +1,23 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragmentos :: imports-css(title='Operadores')}">
+<head th:replace="~{fragmentos :: imports-css(title='Sistema Bancario')}">
 <title>title</title>
 </head>
 <body>
-        <h1 th:utext="${title}" />
-        <a th:href="@{/contacts}">Contact List</a>  
-        <br/><br/>
-        <div>Copyright © vilmarjr.com</div>
-    </body>
+	<div th:replace="~{fragmentos :: barramenu(pagina='Contas')}" />
+
+	<div class="container" style="width: 60%; margin-top: 20px">
+		<div class="card-header center">
+			<h4>Bem-vindo!</h4>
+			<h4>$$$</h4>
+			<h4>Sistema Bancario</h4>
+		</div>
+	</div>
+
+	<div th:replace="~{fragmentos :: imports-js}" />
+	<script>
+
+</script>
+</body>
 </html>

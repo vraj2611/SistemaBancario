@@ -22,71 +22,79 @@ public class ClienteService {
 
 	@Autowired
 	private ContaRepository contaRepo;
-	
+
 	@Autowired
 	private ClienteRepository repo;
-	
-	public List<Cliente> findAll(int page, int size){
+
+	public List<Cliente> findAll(int page, int size) {
 		Pageable p = PageRequest.of(page, size);
 		return repo.findAll(p).toList();
 	}
-	
-	public List<Cliente> findAll(){
+
+	public List<Cliente> findAll() {
 		return repo.findAll();
 	}
-	
-	public Cliente findById(Long id){
-		 Optional<Cliente> result = repo.findById(id);
-		 if(result.isEmpty()) throw new NotFoundException("Cliente nao encontrado!");
-		 return result.get();
+
+	public Cliente findById(Long id) {
+		Optional<Cliente> result = repo.findById(id);
+		if (result.isEmpty())
+			throw new NotFoundException("Cliente nao encontrado!");
+		return result.get();
 	}
-	
+
 	public Cliente save(Cliente c) {
 		try {
 			c.setId(null);
 			c.setSenha(new BCryptPasswordEncoder().encode(c.getSenha()));
-			return repo.save(c);	
-		} catch(Exception e) {
+			return repo.save(c);
+		} catch (Exception e) {
 			ValidationError.isConstraintViolation(e);
 			throw new RuntimeException("Erro ao salvar Cliente!");
 		}
-		
+
 	}
-	
+
 	public Cliente update(Cliente c) {
 		try {
 			Cliente c2 = findById(c.getId());
 			c2.setNome(c.getNome());
 			return repo.save(c2);
-		} catch(Exception e) {
+		} catch (Exception e) {
 			ValidationError.isConstraintViolation(e);
 			throw new RuntimeException("Erro ao atualizar Cliente!");
 		}
 	}
-	
+
 	public void delete(Long id) {
 		Cliente c = findById(id);
 		checkDeleteCliente(c);
 		try {
-			repo.delete(c);			
-		} catch(Exception e) {
+			repo.delete(c);
+		} catch (Exception e) {
 			throw new RuntimeException("Erro ao excluir Cliente!");
 		}
-	}	
-	
+	}
+
 	private void checkDeleteCliente(Cliente c) {
 		List<Conta> contas = contaRepo.findByClienteId(c.getId());
-		if(contas.size() > 0)
+		if (contas.size() > 0)
 			throw new NotDeletableException("Nao pode excluir clientes que ja possui contas!");
 	}
 
 	public void alterarSenha(Cliente c, String nova_senha) {
+		Cliente cdb = findById(c.getId());
+		checkSenhaAtual(cdb, c.getSenha());
 		try {
-			c.setSenha(new BCryptPasswordEncoder().encode(nova_senha));	
-			repo.save(c);
-		} catch(Exception e) {
+			cdb.setSenha(new BCryptPasswordEncoder().encode(nova_senha));
+			repo.save(cdb);
+		} catch (Exception e) {
 			throw new RuntimeException("Erro ao alterar senha!");
 		}
 	}
 
+	private void checkSenhaAtual(Cliente c, String senha_atual) {
+		BCryptPasswordEncoder crypt = new BCryptPasswordEncoder();
+		if (!crypt.matches(senha_atual, c.getSenha()))
+			throw new RuntimeException("Senha atual está incorreta!");
+	}
 }

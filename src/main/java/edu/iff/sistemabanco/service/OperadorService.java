@@ -43,6 +43,7 @@ public class OperadorService {
 
 	public Operador save(Operador o) {
 		try {
+			o.setId(null);
 			o.setSenha(new BCryptPasswordEncoder().encode(o.getSenha()));
 			return repo.save(o);
 		} catch (Exception e) {
@@ -77,8 +78,7 @@ public class OperadorService {
 	private void checkDeleteOperador(Operador o) {
 		List<Transacao> transacoes = transacaoRepo.findByOperadorId(o.getId());
 		if (transacoes.size() > 0)
-			throw new NotDeletableException(
-					"Nao pode excluir operadores que ja fizeram transacoes! qtde=" + transacoes.size());
+			throw new NotDeletableException("Nao pode excluir operadores que ja fizeram transacoes!");
 	}
 
 	public void alterarSenha(Operador o, String nova_senha) {
@@ -91,9 +91,9 @@ public class OperadorService {
 			throw new RuntimeException("Erro ao alterar senha!");
 		}
 	}
-	
+
 	private void checkSenhaAtual(Operador o, String senha_atual) {
-        BCryptPasswordEncoder crypt = new BCryptPasswordEncoder();
+		BCryptPasswordEncoder crypt = new BCryptPasswordEncoder();
 		if (!crypt.matches(senha_atual, o.getSenha()))
 			throw new RuntimeException("Senha atual está incorreta!");
 	}

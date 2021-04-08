@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import edu.iff.sistemabanco.model.Operador;
 import edu.iff.sistemabanco.service.OperadorService;
+import edu.iff.sistemabanco.service.TransacaoService;
 
 @Controller
 @RequestMapping(path = "/operadores")
@@ -23,6 +24,9 @@ public class OperadorViewController {
 
 	@Autowired
 	OperadorService serv;
+	
+	@Autowired
+	TransacaoService tServ;
 
 	@GetMapping
 	public String getAll(Model model) {
@@ -39,6 +43,7 @@ public class OperadorViewController {
 	@GetMapping(path = "/operador/{id}")
 	public String alterar(@PathVariable("id") Long id, Model model) {
 		model.addAttribute("operador", serv.findById(id));
+		model.addAttribute("transacoes", tServ.findByOperadorId(id));
 		return "formOperador";
 	}
 
@@ -57,8 +62,8 @@ public class OperadorViewController {
 			return "formOperador";
 		}
 
-		operador.setId(null);
 		try {
+			operador.setId(null);
 			serv.save(operador);
 			model.addAttribute("msgSucesso", "Operador cadastrado com sucesso.");
 			return "redirect:/operadores";
@@ -75,8 +80,9 @@ public class OperadorViewController {
 			model.addAttribute("msgErros", result.getAllErrors());
 			return "formOperador";
 		}
-		operador.setId(id);
+		
 		try {
+			operador.setId(id);
 			serv.update(operador);
 			model.addAttribute("msgSucesso", "Operador atualizado com sucesso.");
 			model.addAttribute("operador", operador);

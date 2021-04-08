@@ -9,10 +9,9 @@
         <div class="container" align="center" style="margin-top: 30px">
             <h3>Ops! Algo deu errado.</h3>
             <div th:replace="~{fragmentos :: mensagens}"/>
-            <a class="btn btn-primary" th:href="@{~/}" role="button">Voltar</a>
+            <a class="btn btn-primary" href="javascript:history.go(-1)" role="button">Voltar</a>
         </div>
-            
-
+        
         <div th:replace="~{fragmentos :: imports-js}"/>
     </body>
 </html>

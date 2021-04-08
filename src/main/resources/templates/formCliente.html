@@ -1,24 +1,25 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragmentos :: imports-css(title='Cliente')}">
+<head th:replace="~{fragmentos :: imports-css(title='Clientes')}">
 <title>title</title>
 </head>
 <body>
-	<div th:replace="~{fragmentos :: barramenu(pagina='operadores')}" />
+	<div th:replace="~{fragmentos :: barramenu(pagina='clientes')}" />
 
 	<div class="container" style="width: 60%; margin-top: 20px">
 		<div class="card-header">
 			<h4>
-				Cadastro de operadores <a class="btn btn-primary float-right"
-					th:href="@{~/operadores}" role="button">voltar</a>
+				Cliente <span th:text="${cliente.nome}"></span> <a
+					class="btn btn-primary float-right" th:href="@{~/clientes}"
+					role="button">Voltar</a>
 			</h4>
 		</div>
 
 		<div th:replace="~{fragmentos :: mensagens}"></div>
 
-		<form th:object="${operador}"
-			th:action="@{~/operadores/operador/{id}(id=${operador.id})}"
+		<form th:object="${cliente}" id="frm_dados"
+			th:action="@{${cliente.id}?'~/clientes/cliente/'+${cliente.id}:'~/clientes/cliente'}"
 			method="post" class="card-body">
 			<input type="hidden" th:field="*{id}" />
 			<div class="form-row">
@@ -33,21 +34,84 @@
 						class="form-control" placeholder="CPF" required="required" />
 				</div>
 			</div>
-			<div class="form-row">
-				<div class="form-group col-md-8">
-					<label for="nome">Senha:</label> <input th:field="*{senha}"
-						type="text" class="form-control" placeholder="Senha"
-						required="required" maxlength="8" />
+			<div class="form-row" th:unless="${cliente.id}">
+				<div class="form-group col-md-6">
+					<label for="senha">Senha:</label> <input th:field="*{senha}"
+						type="password" class="form-control" placeholder="Senha" minlength="8"
+						required="required"/>
 				</div>
-				<div class="form-group col-md-4"></div>
+				<div class="form-group col-md-6">
+					<label for="senha">Confirmar Senha:</label> <input name="confirmarsenha"
+						type="password" class="form-control" placeholder="Senha" minlength="8"
+						required="required" />
+				</div>
 			</div>
 			<div class="card-footer">
-				<input type="submit" class="btn btn-success" value="salvar" />
+				<input type="submit" class="btn btn-primary" value="Salvar" /> <a
+					id="btn_altsenha" class="btn btn-outline-primary btn-sm" th:if="${cliente.id}">Alterar
+					Senha</a> <a th:href="@{'~/clientes/'+${cliente.id}+'/deletar'}"
+					class="btn btn-outline-danger btn-sm float-right"
+					th:if="${cliente.id}"
+					onclick="return confirm('Deseja realmente excluir esse pacote?')">Excluir</a>
+			</div>
+		</form>
+		<form th:object="${cliente}" id="frm_altsenha" style="display:none" th:if="${cliente.id}"
+			th:action="@{'~/clientes/cliente/'+${cliente.id}+'/alterarsenha'}"
+			method="post" class="card-body">
+			<input type="hidden" th:field="*{id}" />
+			<div class="form-row">
+				<div class="form-group col-md-8">
+					<label for="nome">Nome:</label> <input th:field="*{nome}"
+						type="text" class="form-control" placeholder="Nome"
+						required="required" maxlength="200" disabled />
+				</div>
+				<div class="form-group col-md-4">
+					<label for="cpf">CPF:</label> <input th:field="*{cpf}"
+						pattern="[0-9]{11}" maxlength="11" type="text"
+						class="form-control" placeholder="CPF" required="required"
+						disabled />
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group">
+					<label for="senha">Senha Atual:</label> <input
+						th:field="*{senha}" type="password" class="form-control"
+						placeholder="Senha Atual" required="required" minlength="8" />
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group">
+					<label for="nova_senha">Nova Senha:</label> <input
+						th:name="nova_senha" type="password" class="form-control"
+						placeholder="Nova Senha" required="required" minlength="8"/>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group">
+					<label for="confirma_senha">Confirmar Senha:</label> <input
+						th:name="confirma_senha" type="password" class="form-control"
+						placeholder="Confirmar Senha" required="required" minlength="8"/>
+				</div>
+			</div>
+			<div class="card-footer">
+				<input type="submit" class="btn btn-primary" value="Salvar" />
+				<a	id="btn_cancelar" class="btn btn-outline-primary btn-sm">Cancelar</a>
 			</div>
 		</form>
 	</div>
 
 	<div th:replace="~{fragmentos :: imports-js}" />
-
+	<script>
+$(document).ready(function(){
+  $("#btn_altsenha").click(function(){
+    $("#frm_altsenha").show();
+    $("#frm_dados").hide();
+  });
+   $("#btn_cancelar").click(function(){
+    $("#frm_altsenha").hide();
+    $("#frm_dados").show();
+  });
+});
+</script>
 </body>
 </html>
