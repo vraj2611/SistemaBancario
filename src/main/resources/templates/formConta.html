@@ -64,7 +64,7 @@
 				<span
 					th:text="${#lists.size(transacoes)+' Transações até ' + conta.datahora.get(5) + '/' + (conta.datahora.get(2)+1) + '/' + conta.datahora.get(1) + ' ' + conta.datahora.getTime().getHours() + ':'+ conta.datahora.getTime().getMinutes() + ':' + conta.datahora.getTime().getSeconds()}"></span>
 				<a class="btn btn-primary btn-sm float-right"
-					th:href="@{~/transacoes/transacao}" role="button">Nova
+					th:href="@{'~/transacoes/conta/'+${conta.id}+'/transacao'}" role="button">Nova
 					Transação</a>
 			</h6>
 

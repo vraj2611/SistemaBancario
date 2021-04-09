@@ -77,7 +77,7 @@ public abstract class Transacao implements Serializable {
 	@JsonIgnoreProperties({ "transacoes", "hibernateLazyInitializer" })
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Operador operador;
-
+	
 	private void checkTransacaoPendente() {
 		if (this.getStatus() != StatusTransacaoEnum.PENDENTE) {
 			String msg = "Essa transacao ja foi " + this.getStatus();

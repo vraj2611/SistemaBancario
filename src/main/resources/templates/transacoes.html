@@ -34,7 +34,7 @@
 						<td><a th:text="${transacao.tipo}"
 							th:href="@{'~/transacoes/transacao/'+${transacao.id}}"></a></td>
 						<td th:text="${#numbers.formatCurrency(transacao.valor)}"></td>
-						<td><a th:text="${transacao.conta.nome}"
+						<td><a th:text="${transacao.conta.id}+'/'+${transacao.conta.nome}"
 							th:href="@{'~/contas/conta/'+${transacao.conta.id}}"></a></td>
 						<td><a th:text="${transacao.conta.cliente.nome}"
 							th:href="@{'~/clientes/cliente/'+${transacao.conta.cliente.id}}"></a></td>

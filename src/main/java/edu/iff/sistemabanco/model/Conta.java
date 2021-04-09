@@ -105,6 +105,7 @@ public class Conta implements Serializable {
 	public Deposito depositar(double valor, String descricao) {
 		Deposito d = Deposito.criar(this, valor, descricao);
 		this.transacoes.add(d);
+		this.atualizarSaldo();
 		return d;
 	}
 
