@@ -1,15 +1,20 @@
 package edu.iff.sistemabanco.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.br.CPF;
@@ -38,6 +43,9 @@ public abstract class Pessoa implements Serializable {
 	@NotBlank(message = "Senha nao pode estar vazio!")
 	@Length(min = 8, message = "Senha deve ter no minimo 8 caracteres!")
 	private String senha;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @Size(min = 1, message = "Deve ter no mínimo 1 permissão.")
+    private List<Permissao> permissoes = new ArrayList<>();
 
 	public Pessoa() {
 	}
@@ -72,6 +80,14 @@ public abstract class Pessoa implements Serializable {
 
 	public void setSenha(String senha) {
 		this.senha = senha;
+	}
+
+	public List<Permissao> getPermissoes() {
+		return permissoes;
+	}
+
+	public void setPermissoes(List<Permissao> permissoes) {
+		this.permissoes = permissoes;
 	}
 
 	@Override

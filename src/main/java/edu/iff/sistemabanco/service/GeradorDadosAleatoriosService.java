@@ -10,8 +10,10 @@ import edu.iff.sistemabanco.model.Cliente;
 import edu.iff.sistemabanco.model.Conta;
 import edu.iff.sistemabanco.model.Operador;
 import edu.iff.sistemabanco.model.PacoteServico;
+import edu.iff.sistemabanco.model.Permissao;
 import edu.iff.sistemabanco.model.Transacao;
 import edu.iff.sistemabanco.model.TransacaoDto;
+import edu.iff.sistemabanco.repository.PermissaoRepository;
 
 // SERVICO PARA PRRENCHER O BANCO DE DADOS
 // É CHAMADO POR UMA ROTA EM OperadorController
@@ -32,15 +34,24 @@ public class GeradorDadosAleatoriosService {
 
 	@Autowired
 	private TransacaoService tServ;
+	
+	@Autowired
+	private PermissaoRepository permRepo;
 
 	public void preencherBancoDeDados() {
-		criarOperadores();
-		criarClientes();
+		Permissao p1 = new Permissao();
+        p1.setNome("ADMIN");
+        Permissao p2 = new Permissao();
+        p2.setNome("FUNC");
+        permRepo.saveAll(List.of(p1, p2));
+		
+		criarOperadores(p1);
+		criarClientes(p2);
 		criarPacotesServicos();
 		criarContas();
 		criarTransacoes();
 	}
-
+	
 	private void criarPacotesServicos() {
 		PacoteServico pct = new PacoteServico();
 		pct.setNome("BASICO");
@@ -59,7 +70,7 @@ public class GeradorDadosAleatoriosService {
 		pct2.setTaxa_rendimento(0.09);
 		pct2.setValor_mensalidade(19.99);
 		pct2.setValor_retiradas(14.99);
-		pct.setLimite_preaprovado(200);
+		pct2.setLimite_preaprovado(200);
 		pctServ.save(pct2);
 
 		PacoteServico pct3 = new PacoteServico();
@@ -69,15 +80,16 @@ public class GeradorDadosAleatoriosService {
 		pct3.setTaxa_rendimento(0.15);
 		pct3.setValor_mensalidade(99.99);
 		pct3.setValor_retiradas(4.99);
-		pct.setLimite_preaprovado(300);
+		pct3.setLimite_preaprovado(300);
 		pctServ.save(pct3);
 	}
 
-	private void criarOperadores() {
+	private void criarOperadores(Permissao perm) {
 		String[] nomes = { "Gabriela Rangel", "Jair Araujo", "Debora Gomes" };
 		String[] cpfs = { "89322690097", "99905616055", "40644174021" };
 		for (int i = 0; i < nomes.length; i++) {
 			Operador op = new Operador();
+			op.setPermissoes(List.of(perm));
 			op.setCpf(cpfs[i]);
 			op.setNome(nomes[i]);
 			op.setSenha("abcde123");
@@ -85,11 +97,12 @@ public class GeradorDadosAleatoriosService {
 		}
 	}
 
-	private void criarClientes() {
+	private void criarClientes(Permissao perm) {
 		String[] nomes = { "Ivy Nogueira", "Carmo Barreto", "Alexandre Carvalho", "Josiane Lopes" };
 		String[] cpfs = { "87962719060", "27628423019", "91847876005", "05588939026" };
 		for (int i = 0; i < nomes.length; i++) {
 			Cliente cl = new Cliente();
+			cl.setPermissoes(List.of(perm));
 			cl.setCpf(cpfs[i]);
 			cl.setNome(nomes[i]);
 			cl.setSenha("abcde123");

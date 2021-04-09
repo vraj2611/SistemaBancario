@@ -1,5 +1,6 @@
 package edu.iff.sistemabanco.service;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,6 +58,21 @@ public class ContaService {
 	
 	public Conta save(Conta conta) {
 		try {
+			conta.setId(null);
+			conta.setSaldo(0);
+			conta.setDatahora(Calendar.getInstance());
+			return repo.save(conta);
+		} catch (Exception e) {
+			ValidationError.isConstraintViolation(e);
+			throw new RuntimeException("Erro ao salvar Conta!");
+		}
+	}
+	
+	public Conta update(Conta conta) {
+		Conta cdb = findById(conta.getId());
+		try {
+			cdb.setPacote(conta.getPacote());
+			cdb.setNome(conta.getNome());
 			return repo.save(conta);
 		} catch (Exception e) {
 			ValidationError.isConstraintViolation(e);
