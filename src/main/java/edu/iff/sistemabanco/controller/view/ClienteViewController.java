@@ -69,7 +69,7 @@ public class ClienteViewController {
 	}
 	
 	@PostMapping(path = "/cliente")
-	public String save(@Valid @ModelAttribute Cliente cliente, BindingResult result,
+	public String save(@ModelAttribute Cliente cliente, BindingResult result,
 			@RequestParam("confirmarsenha") String confirmarSenha, Model model) {
 
 		if (result.hasErrors()) {

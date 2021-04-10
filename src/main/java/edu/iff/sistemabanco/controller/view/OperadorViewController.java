@@ -48,7 +48,7 @@ public class OperadorViewController {
 	}
 
 	@PostMapping(path = "/operador")
-	public String save(@Valid @ModelAttribute Operador operador, BindingResult result,
+	public String save(@ModelAttribute Operador operador, BindingResult result,
 			@RequestParam("confirmarsenha") String confirmarSenha, Model model) {
 
 		if (result.hasErrors()) {

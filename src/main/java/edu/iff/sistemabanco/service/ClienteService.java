@@ -14,8 +14,10 @@ import edu.iff.sistemabanco.exception.NotFoundException;
 import edu.iff.sistemabanco.exception.ValidationError;
 import edu.iff.sistemabanco.model.Cliente;
 import edu.iff.sistemabanco.model.Conta;
+import edu.iff.sistemabanco.model.Permissao;
 import edu.iff.sistemabanco.repository.ClienteRepository;
 import edu.iff.sistemabanco.repository.ContaRepository;
+import edu.iff.sistemabanco.repository.PermissaoRepository;
 
 @Service
 public class ClienteService {
@@ -25,6 +27,9 @@ public class ClienteService {
 
 	@Autowired
 	private ClienteRepository repo;
+	
+	@Autowired
+	private PermissaoRepository pRepo; 
 
 	public List<Cliente> findAll(int page, int size) {
 		Pageable p = PageRequest.of(page, size);
@@ -53,6 +58,8 @@ public class ClienteService {
 		try {
 			c.setId(null);
 			c.setSenha(new BCryptPasswordEncoder().encode(c.getSenha()));
+			List<Permissao> ps = pRepo.findAll();
+			c.setPermissoes(List.of(ps.get(1)));
 			return repo.save(c);
 		} catch (Exception e) {
 			ValidationError.isConstraintViolation(e);

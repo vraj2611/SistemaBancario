@@ -13,8 +13,10 @@ import edu.iff.sistemabanco.exception.NotDeletableException;
 import edu.iff.sistemabanco.exception.NotFoundException;
 import edu.iff.sistemabanco.exception.ValidationError;
 import edu.iff.sistemabanco.model.Operador;
+import edu.iff.sistemabanco.model.Permissao;
 import edu.iff.sistemabanco.model.Transacao;
 import edu.iff.sistemabanco.repository.OperadorRepository;
+import edu.iff.sistemabanco.repository.PermissaoRepository;
 import edu.iff.sistemabanco.repository.TransacaoRepository;
 
 @Service
@@ -24,6 +26,9 @@ public class OperadorService {
 
 	@Autowired
 	private TransacaoRepository transacaoRepo;
+	
+	@Autowired
+	private PermissaoRepository pRepo; 
 
 	public List<Operador> findAll(int page, int size) {
 		Pageable p = PageRequest.of(page, size);
@@ -45,6 +50,8 @@ public class OperadorService {
 		try {
 			o.setId(null);
 			o.setSenha(new BCryptPasswordEncoder().encode(o.getSenha()));
+			List<Permissao> ps = pRepo.findAll();
+			o.setPermissoes(List.of(ps.get(0)));
 			return repo.save(o);
 		} catch (Exception e) {
 			ValidationError.isConstraintViolation(e);

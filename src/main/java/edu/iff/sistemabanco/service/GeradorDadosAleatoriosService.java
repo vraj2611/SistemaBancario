@@ -42,7 +42,7 @@ public class GeradorDadosAleatoriosService {
 		Permissao p1 = new Permissao();
         p1.setNome("ADMIN");
         Permissao p2 = new Permissao();
-        p2.setNome("FUNC");
+        p2.setNome("CLT");
         permRepo.saveAll(List.of(p1, p2));
 		
 		criarOperadores(p1);
