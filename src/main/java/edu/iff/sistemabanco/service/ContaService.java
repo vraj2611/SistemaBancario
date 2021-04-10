@@ -99,11 +99,6 @@ public class ContaService {
 	public Conta getContaDetail(Long conta_id) {
 		Conta c = findById(conta_id);
 		c.setTransacoes(tServ.findAllByContaId(c.getId()));
-		/*System.out.println("=== Conta "+c.getId());
-		for(Transacao t:c.getTransacoes()) {
-			System.out.println(t.getValorParaSaldo(c)+" "+t.getTipo()+" "+t.getId()+" "+t.isAutorizada());
-		}
-		System.out.println("============");*/
 		return c;
 	}
 
@@ -120,23 +115,26 @@ public class ContaService {
 	public Deposito depositar(Long id, TransacaoDto dto) {
 		Conta c = getContaDetail(id);
 		Deposito d = c.depositar(dto.getValor(), dto.getDescricao());
+		tServ.save(d);
 		repo.save(c);
-		return (Deposito) tServ.save(d);
+		return d; 
 	}
 
 	public Retirada retirar(Long id, TransacaoDto dto) {
 		Conta c = getContaDetail(id);
 		Retirada r = c.retirar(dto.getValor(), dto.getDescricao());
+		tServ.save(r);
 		repo.save(c);
-		return (Retirada) tServ.save(r);
+		return r;
 	}
 
 	public Transferencia transferir(Long id, TransacaoDto dto) {
 		Conta c = getContaDetail(id);
-		Conta c_destino = findById(dto.getId_conta_destino());
+		Conta c_destino = getContaDetail(dto.getId_conta_destino());
 		Transferencia t = c.transferir(dto.getValor(), c_destino, dto.getDescricao());
-		repo.save(c);
-		return (Transferencia) tServ.save(t);
+		tServ.save(t);
+		repo.saveAll(List.of(c, c_destino));
+		return t;
 	}
 
 	public CustoOperacional debitarCustos(Conta c, Operador o) {
@@ -160,8 +158,8 @@ public class ContaService {
 		repo.save(c);
 		
 		if(t instanceof Transferencia) {
-			Transferencia t2 = (Transferencia) t;
-			Conta c_dest = getContaDetail(t2.getConta_destino().getId());
+			Transferencia transf = (Transferencia) t;
+			Conta c_dest = getContaDetail(transf.getConta_destino().getId());
 			c_dest.atualizarSaldo();
 			repo.save(c_dest);
 		}

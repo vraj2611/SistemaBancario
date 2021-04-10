@@ -12,8 +12,7 @@
 			<h4>
 				<span th:text="${#lists.size(transacoes)}+' Transações'"></span> <a
 					class="btn btn-primary float-right"
-					th:href="@{~/transacoes/transacao}" role="button">Nova
-					Transação</a>
+					th:href="@{~/transacoes/pendentes}" role="button">Somente Pendentes</a>
 			</h4>
 		</div>
 		<div class="shadow">

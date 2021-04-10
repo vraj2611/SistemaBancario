@@ -1,6 +1,5 @@
 package edu.iff.sistemabanco.controller.view;
 
-import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import edu.iff.sistemabanco.model.Conta;
-import edu.iff.sistemabanco.model.Deposito;
 import edu.iff.sistemabanco.model.Operador;
 import edu.iff.sistemabanco.model.StatusTransacaoEnum;
 import edu.iff.sistemabanco.model.TipoTransacaoEnum;
@@ -80,6 +77,8 @@ public class TransacaoViewController {
 			t = cServ.depositar(cid, dto);
 		} else if(dto.getTipo() == TipoTransacaoEnum.RETIRADA){
 			t = cServ.retirar(cid, dto);
+		} else if(dto.getTipo() == TipoTransacaoEnum.TRANSFERENCIA){
+			t = cServ.transferir(cid, dto);
 		}
 	
 		model.addAttribute("transacao", t);

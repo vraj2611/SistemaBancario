@@ -48,14 +48,22 @@ td a:link, td a:visited {
 					<span class="navbar-toggler-icon"></span>
 				</button>
 				<div class="collapse navbar-collapse" id="textoNavbar">
-					<ul class="navbar-nav mr-auto">
+					<ul class="navbar-nav mr-auto" sec:authorize="hasRole('ROLE_CLT')">
+						<li class="nav-item"
+							th:classappend="${pagina == 'clientes' ? 'active' : ''}"><a
+							class="nav-link" th:href="@{~/clientes/minhascontas}">Contas</a></li>
+						<li class="nav-item"
+							th:classappend="${pagina == 'pacotes' ? 'active' : ''}"><a
+							class="nav-link" th:href="@{~/pacotes}">Pacotes</a></li>
+					</ul>
+					<ul class="navbar-nav mr-auto" sec:authorize="hasRole('ROLE_ADMIN')">
 						<li class="nav-item"
 							th:classappend="${pagina == 'operadores' ? 'active' : ''}"><a
 							class="nav-link" th:href="@{~/operadores}">Operadores</a></li>
 						<li class="nav-item"
 							th:classappend="${pagina == 'clientes' ? 'active' : ''}"><a
 							class="nav-link" th:href="@{~/clientes}">Clientes</a></li>
-						<li class="nav-item"
+						<li class="nav-item" 
 							th:classappend="${pagina == 'contas' ? 'active' : ''}"><a
 							class="nav-link" th:href="@{~/contas}">Contas</a></li>
 						<li class="nav-item"
@@ -65,6 +73,7 @@ td a:link, td a:visited {
 							th:classappend="${pagina == 'transacoes' ? 'active' : ''}"><a
 							class="nav-link" th:href="@{~/transacoes}">Transações</a></li>
 					</ul>
+					<a sec:authorize="isAuthenticated()" class="btn btn-outline-danger" style="float: right" th:href="@{~/logout}" role="button">Sair</a>
 				</div>
 			</nav>
 

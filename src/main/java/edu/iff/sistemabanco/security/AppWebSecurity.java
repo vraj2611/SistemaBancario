@@ -12,23 +12,18 @@ public class AppWebSecurity extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private AppUserDetailService serv;
-	
+
 	@Override
-    protected void configure(HttpSecurity http) throws Exception {
-		 /*http.authorizeRequests()
-	      .anyRequest().authenticated()
-	      .and().formLogin()
-	      .loginPage("").permitAll();
-		*/
-		http.cors().and().csrf().disable().authorizeRequests()
-		.antMatchers("/**").permitAll().anyRequest().authenticated();
+	protected void configure(HttpSecurity http) throws Exception {
+		http.authorizeRequests().anyRequest().authenticated().and().formLogin().permitAll();
+
+		// http.cors().and().csrf().disable().authorizeRequests()
+		// .antMatchers("/**").permitAll().anyRequest().authenticated();
 	}
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(serv).passwordEncoder(new BCryptPasswordEncoder());
 	}
-	
-	
-	
+
 }

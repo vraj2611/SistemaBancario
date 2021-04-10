@@ -41,6 +41,13 @@ public class ClienteService {
 			throw new NotFoundException("Cliente nao encontrado!");
 		return result.get();
 	}
+	
+	public Cliente findByCpf(String cpf) {
+		List<Cliente> result = repo.findByCpf(cpf);
+		if (result.isEmpty())
+			throw new NotFoundException("Cliente nao encontrado!");
+		return result.get(0);
+	}
 
 	public Cliente save(Cliente c) {
 		try {

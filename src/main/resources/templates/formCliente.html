@@ -11,7 +11,7 @@
 		<div class="card-header">
 			<h4>
 				Cliente <span th:text="${cliente.nome}"></span> <a
-					class="btn btn-primary float-right" th:href="@{~/clientes}"
+					class="btn btn-primary float-right" href="javascript:history.go(-1)"
 					role="button">Voltar</a>
 			</h4>
 		</div>
@@ -52,7 +52,7 @@
 					th:if="${cliente.id}">Alterar Senha</a> <a
 					th:href="@{'~/clientes/'+${cliente.id}+'/deletar'}"
 					class="btn btn-outline-danger btn-sm float-right"
-					th:if="${cliente.id}"
+					th:if="${cliente.id}" sec:authorize="hasRole('ROLE_ADMIN')"
 					onclick="return confirm('Deseja realmente excluir esse pacote?')">Excluir</a>
 			</div>
 		</form>
@@ -110,7 +110,7 @@
 			style="font-size: 1.2rem; font-weight: bolder; margin-top: 20px">
 			<h6>
 				<span th:text="${#lists.size(contas)+' Contas do Cliente - Saldo Total: '+#numbers.formatCurrency(saldo_cliente)}"></span>
-				<a class="btn btn-primary btn-sm float-right"
+				<a class="btn btn-primary btn-sm float-right"  sec:authorize="hasRole('ROLE_ADMIN')"
 					th:href="@{~/contas/conta}" role="button">Nova Conta</a>
 			</h6>
 		</div>

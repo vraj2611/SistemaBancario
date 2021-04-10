@@ -113,6 +113,7 @@ public class Conta implements Serializable {
 		this.checkSaldoDisponivel(valor);
 		Retirada r = Retirada.criar(this, valor, descricao);
 		this.transacoes.add(r);
+		this.atualizarSaldo();
 		return r;
 	}
 
@@ -120,6 +121,11 @@ public class Conta implements Serializable {
 		this.checkSaldoDisponivel(valor);
 		Transferencia t = Transferencia.criar(this, valor, conta_destino, descricao);
 		this.transacoes.add(t);
+		List<Transacao> tdest = conta_destino.getTransacoes();
+		tdest.add(t);
+		conta_destino.setTransacoes(tdest);
+		conta_destino.atualizarSaldo();
+		this.atualizarSaldo();
 		return t;
 	}
 

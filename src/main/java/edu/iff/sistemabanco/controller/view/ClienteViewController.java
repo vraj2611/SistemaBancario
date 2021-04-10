@@ -5,6 +5,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -42,13 +44,25 @@ public class ClienteViewController {
 		model.addAttribute("cliente", new Cliente());
 		return "formCliente";
 	}
-
+	
 	@GetMapping(path = "/cliente/{id}")
 	public String alterar(@PathVariable("id") Long id, Model model) {
 		model.addAttribute("cliente", serv.findById(id));
 		List<Conta> contas = contaServ.findByClienteId(id);
 		double saldo_cliente = 0;
 		for(Conta c :contas) saldo_cliente += c.getSaldo(); 
+		model.addAttribute("saldo_cliente", saldo_cliente);
+		model.addAttribute("contas", contas);
+		return "formCliente";
+	}
+
+	@GetMapping(path = "/minhascontas")
+	public String minhascontas(@AuthenticationPrincipal User user, Model model) {
+		Cliente clt = serv.findByCpf(user.getUsername()); 
+		List<Conta> contas = contaServ.findByClienteId(clt.getId());
+		double saldo_cliente = 0;
+		for(Conta c :contas) saldo_cliente += c.getSaldo(); 
+		model.addAttribute("cliente", clt);
 		model.addAttribute("saldo_cliente", saldo_cliente);
 		model.addAttribute("contas", contas);
 		return "formCliente";
