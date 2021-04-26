@@ -6,12 +6,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import edu.iff.sistemabanco.controller.view.AppViewControllerAdvice;
 import edu.iff.sistemabanco.exception.Error;
 import edu.iff.sistemabanco.exception.NotDeletableException;
 import edu.iff.sistemabanco.exception.NotFoundException;
@@ -24,6 +27,7 @@ public class AppRestControllerAdvice {
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<Error> erroPadrao(Exception e, HttpServletRequest request) {
+		
 		Error erro = new Error(
 			Calendar.getInstance(),
 			HttpStatus.BAD_REQUEST.value(),

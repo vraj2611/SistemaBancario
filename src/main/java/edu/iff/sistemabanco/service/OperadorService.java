@@ -46,6 +46,9 @@ public class OperadorService {
 		return result.get();
 	}
 
+	public Operador findByCpf(String cpf) {
+		return repo.findByCpf(cpf).get(0);
+	}
 	public Operador save(Operador o) {
 		try {
 			o.setId(null);

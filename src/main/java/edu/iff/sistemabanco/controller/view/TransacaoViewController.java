@@ -3,8 +3,11 @@ package edu.iff.sistemabanco.controller.view;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,13 +30,13 @@ public class TransacaoViewController {
 
 	@Autowired
 	TransacaoService serv;
-	
+
 	@Autowired
 	ContaService cServ;
-	
+
 	@Autowired
 	OperadorService oServ;
-	
+
 	@GetMapping
 	public String getAll(Model model) {
 		model.addAttribute("transacoes", serv.findAll());
@@ -51,11 +54,11 @@ public class TransacaoViewController {
 		Transacao t = serv.findById(id);
 		model.addAttribute("transacao", t);
 		model.addAttribute("tipos", t.getTipo());
-		if(t instanceof Transferencia) {
-			model.addAttribute("destinos", ((Transferencia) t).getConta_destino());	
+		if (t instanceof Transferencia) {
+			model.addAttribute("destinos", ((Transferencia) t).getConta_destino());
 		} else {
 			model.addAttribute("destinos", t.getConta());
-		}			
+		}
 		return "formTransacao";
 	}
 
@@ -69,54 +72,82 @@ public class TransacaoViewController {
 		model.addAttribute("destinos", cServ.findAll());
 		return "formTransacao";
 	}
-	
+
 	@PostMapping(path = "/conta/{conta_id}/transacao")
 	public String salvar(@PathVariable("conta_id") Long cid, @ModelAttribute TransacaoDto dto, Model model) {
-		Transacao t = null;
-		if(dto.getTipo() == TipoTransacaoEnum.DEPOSITO) {
-			t = cServ.depositar(cid, dto);
-		} else if(dto.getTipo() == TipoTransacaoEnum.RETIRADA){
-			t = cServ.retirar(cid, dto);
-		} else if(dto.getTipo() == TipoTransacaoEnum.TRANSFERENCIA){
-			t = cServ.transferir(cid, dto);
+		try {
+			Transacao t = null;
+			if (dto.getTipo() == TipoTransacaoEnum.DEPOSITO) {
+				t = cServ.depositar(cid, dto);
+			} else if (dto.getTipo() == TipoTransacaoEnum.RETIRADA) {
+				t = cServ.retirar(cid, dto);
+			} else if (dto.getTipo() == TipoTransacaoEnum.TRANSFERENCIA) {
+				t = cServ.transferir(cid, dto);
+			}
+
+			model.addAttribute("transacao", t);
+			model.addAttribute("tipos", t.getTipo());
+			if (t instanceof Transferencia) {
+				model.addAttribute("destinos", ((Transferencia) t).getConta_destino());
+			} else {
+				model.addAttribute("destinos", t.getConta());
+			}
+			return "formTransacao";
+		} catch (Exception e) {
+			model.addAttribute("msgErros", new ObjectError("Transacao", e.getMessage()));
+			Transferencia t = new Transferencia();
+			t.setConta(cServ.findById(cid));
+			t.setStatus(StatusTransacaoEnum.PENDENTE);
+			model.addAttribute("transacao", t);
+			model.addAttribute("tipos", TipoTransacaoEnum.values());
+			model.addAttribute("destinos", cServ.findAll());
+			return "formTransacao";
 		}
-	
-		model.addAttribute("transacao", t);
-		model.addAttribute("tipos", t.getTipo());
-		if(t instanceof Transferencia) {
-			model.addAttribute("destinos", ((Transferencia) t).getConta_destino());	
-		} else {
-			model.addAttribute("destinos", t.getConta());
-		}			
-		return "formTransacao";
 	}
-	
+
 	@GetMapping(path = "/transacao/{id}/autorizar")
-	public String autorizar(@PathVariable("id") Long id, Model model) {
-		List<Operador> lo = oServ.findAll(); 
-		Transacao t = cServ.autorizar(lo.get(0), id);
-		model.addAttribute("transacao", t);
-		model.addAttribute("tipos", t.getTipo());		
-		if(t instanceof Transferencia) {
-			model.addAttribute("destinos", ((Transferencia) t).getConta_destino());	
-		} else {
-			model.addAttribute("destinos", t.getConta());
-		}			
-		return "formTransacao";
+	public String autorizar(@AuthenticationPrincipal User user, @PathVariable("id") Long id, Model model) {
+		try {
+			Operador o = oServ.findByCpf(user.getUsername());
+			Transacao t = cServ.autorizar(o, id);
+			model.addAttribute("transacao", t);
+			model.addAttribute("tipos", t.getTipo());
+			if (t instanceof Transferencia) {
+				model.addAttribute("destinos", ((Transferencia) t).getConta_destino());
+			} else {
+				model.addAttribute("destinos", t.getConta());
+			}
+			return "formTransacao";
+		} catch (Exception e) {
+			model.addAttribute("msgErros", new ObjectError("Transacao", e.getMessage()));
+			model.addAttribute("transacao", serv.findById(id));
+			model.addAttribute("tipos", TipoTransacaoEnum.values());
+			model.addAttribute("destinos", cServ.findAll());
+			return "formTransacao";
+		}
 	}
-	
+
 	@GetMapping(path = "/transacao/{id}/bloquear")
-	public String bloquear(@PathVariable("id") Long id, Model model) {
-		List<Operador> lo = oServ.findAll(); 
-		Transacao t = cServ.bloquear(lo.get(0), id);		
-		model.addAttribute("transacao", t);
-		model.addAttribute("tipos", t.getTipo());	
-		if(t instanceof Transferencia) {
-			model.addAttribute("destinos", ((Transferencia) t).getConta_destino());	
-		} else {
-			model.addAttribute("destinos", t.getConta());
-		}			
-		return "formTransacao";
+	public String bloquear(@AuthenticationPrincipal User user, @PathVariable("id") Long id, Model model) {
+		try {
+			
+			Operador o = oServ.findByCpf(user.getUsername());
+			Transacao t = cServ.bloquear(o, id);
+			model.addAttribute("transacao", t);
+			model.addAttribute("tipos", t.getTipo());
+			if (t instanceof Transferencia) {
+				model.addAttribute("destinos", ((Transferencia) t).getConta_destino());
+			} else {
+				model.addAttribute("destinos", t.getConta());
+			}
+			return "formTransacao";
+		} catch (Exception e) {
+			model.addAttribute("msgErros", new ObjectError("Transacao", e.getMessage()));
+			model.addAttribute("transacao", serv.findById(id));
+			model.addAttribute("tipos", TipoTransacaoEnum.values());
+			model.addAttribute("destinos", cServ.findAll());
+			return "formTransacao";
+		}
 	}
-	
+
 }

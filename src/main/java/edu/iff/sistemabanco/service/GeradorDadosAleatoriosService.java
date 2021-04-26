@@ -1,5 +1,6 @@
 package edu.iff.sistemabanco.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -34,24 +35,24 @@ public class GeradorDadosAleatoriosService {
 
 	@Autowired
 	private TransacaoService tServ;
-	
+
 	@Autowired
 	private PermissaoRepository permRepo;
 
 	public void preencherBancoDeDados() {
 		Permissao p1 = new Permissao();
-        p1.setNome("ADMIN");
-        Permissao p2 = new Permissao();
-        p2.setNome("CLT");
-        permRepo.saveAll(List.of(p1, p2));
-		
+		p1.setNome("ADMIN");
+		Permissao p2 = new Permissao();
+		p2.setNome("CLT");
+		permRepo.saveAll(List.of(p1, p2));
+
 		criarOperadores(p1);
 		criarClientes(p2);
 		criarPacotesServicos();
 		criarContas();
 		criarTransacoes();
 	}
-	
+
 	private void criarPacotesServicos() {
 		PacoteServico pct = new PacoteServico();
 		pct.setNome("BASICO");
@@ -90,7 +91,7 @@ public class GeradorDadosAleatoriosService {
 		for (int i = 0; i < nomes.length; i++) {
 			Operador op = new Operador();
 			op.setPermissoes(List.of(perm));
-			op.setCpf(cpfs[i]);
+			op.setCpf(criarCpf());
 			op.setNome(nomes[i]);
 			op.setSenha("abcde123");
 			opServ.save(op);
@@ -128,7 +129,7 @@ public class GeradorDadosAleatoriosService {
 		Random rnd = new Random();
 		List<Conta> contas = contaServ.findAll();
 		List<Operador> ops = opServ.findAll();
-				
+
 		for (Conta c : contas) {
 			TransacaoDto dto = new TransacaoDto(1999 + (9 * rnd.nextDouble()), "DEP abc", null, null);
 			contaServ.depositar(c.getId(), dto);
@@ -138,7 +139,7 @@ public class GeradorDadosAleatoriosService {
 			contaServ.depositar(c.getId(), dto3);
 		}
 		autorizarTransacoes(ops.get(0));
-		
+
 		for (Conta c : contas) {
 			TransacaoDto dto = new TransacaoDto(999 + (9 * rnd.nextDouble()), "RET abc", null, null);
 			contaServ.retirar(c.getId(), dto);
@@ -150,15 +151,16 @@ public class GeradorDadosAleatoriosService {
 		autorizarTransacoes(ops.get(1));
 
 		for (Conta c : contas) {
-			if(c.getId()==3) continue;
-			TransacaoDto dto = new TransacaoDto(4999 + (9 * rnd.nextDouble()), "transf ok", contas.get(2).getId(), null);
+			if (c.getId() == 3)
+				continue;
+			TransacaoDto dto = new TransacaoDto(4999 + (9 * rnd.nextDouble()), "transf ok", contas.get(2).getId(),
+					null);
 			contaServ.transferir(c.getId(), dto);
 		}
 		autorizarTransacoes(ops.get(2));
 
 		for (Conta c : contas) {
-			TransacaoDto dto = new TransacaoDto(999 + (9 * rnd.nextDouble()), "RET bloq", null,
-					null);
+			TransacaoDto dto = new TransacaoDto(999 + (9 * rnd.nextDouble()), "RET bloq", null, null);
 			contaServ.retirar(c.getId(), dto);
 			contaServ.debitarCustos(c, ops.get(0));
 			contaServ.pagarRendimentos(c, ops.get(1));
@@ -170,6 +172,35 @@ public class GeradorDadosAleatoriosService {
 		for (Transacao t : pends) {
 			contaServ.autorizar(o, t.getId());
 		}
+	}
+
+	private String criarCpf() {
+		ArrayList<Integer> lista = new ArrayList<Integer>();
+
+		for (int i = 0; i < 9; i++)
+			lista.add((int) (Math.random() * 10));
+
+		for(int d = 0; d < 2; d++) {
+			int peso = lista.size() + 1;
+			int totalSomatoria = 0;
+			for (int num : lista) {
+				totalSomatoria += (num * peso);
+				peso--;
+			}
+
+			int restoDivisao = (totalSomatoria % 11);
+			if (restoDivisao < 2) {
+				lista.add(0);
+			} else {
+				lista.add(11 - restoDivisao);
+			}
+		}
+		
+		String cpf = "";
+		for (int item : lista)
+			cpf += item;
+
+		return cpf;
 	}
 
 }
